@@ -55,7 +55,7 @@ export default function Footer() {
                 }}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-xs sm:text-sm font-semibold font-sans text-white/90 hover:text-white border border-white/10 transition-all cursor-pointer active:scale-95"
               >
-                <span>Explore 16 Sites</span>
+                <span>Explore 17 Sites</span>
                 <Sparkles className="w-3.5 h-3.5 text-[#FDA4AF]" />
               </button>
 

@@ -10,7 +10,7 @@ import { PROJECTS } from "@/data/projects";
 export default function PortfolioView() {
   const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0);
 
-  // Map exactly 15 curated flagship projects with hero section imagery
+  // Map exactly 17 curated flagship projects with hero section imagery
   const carouselItems: HeroCarouselItem[] = PROJECTS.map((p) => ({
     id: p.id,
     title: p.title,

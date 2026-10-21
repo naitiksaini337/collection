@@ -168,7 +168,7 @@ export default function ProjectDrawer({
                     onChange={(e) => setReferencedProject(e.target.value)}
                     className="w-full bg-[#141418] border border-white/[0.08] focus:border-[#7A0F2E] text-xs sm:text-sm text-[#F5F5F7] rounded-xl px-3 py-2.5 focus:outline-none"
                   >
-                    <option value="">-- Choose one of the 15 flagship sites as inspiration --</option>
+                    <option value="">-- Choose one of the 17 flagship sites as inspiration --</option>
                     {PROJECTS.map((p) => (
                       <option key={p.id} value={p.title}>
                         {p.indexNum} {p.title} ({p.niche})

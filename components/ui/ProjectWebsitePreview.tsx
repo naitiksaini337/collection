@@ -38,7 +38,16 @@ export function ProjectWebsitePreview({
   const getProjectGraphic = (idStr?: string | number) => {
     const key = String(idStr || "01").padStart(2, "0");
     switch (key) {
-      case "01": // Nordic Coffee
+      case "01": // Lull Sleep Restorative Science
+        return (
+          <svg className="w-16 h-16 opacity-90 text-[#B9A8FF]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M38 34a14 14 0 1 1-16-20 14 14 0 0 0 16 20z" />
+            <path d="M42 16l1.5 3.5 3.5 1.5-3.5 1.5L42 26l-1.5-3.5-3.5-1.5 3.5-1.5z" fill="currentColor" stroke="none" />
+            <circle cx="22" cy="22" r="1.5" fill="currentColor" stroke="none" />
+            <path d="M46 30l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="currentColor" stroke="none" />
+          </svg>
+        );
+      case "02": // Nordic Coffee
         return (
           <svg className="w-16 h-16 opacity-85 text-[#C88A58]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 24h32v20a10 10 0 0 1-10 10H22a10 10 0 0 1-10-10V24z" />
@@ -46,7 +55,7 @@ export function ProjectWebsitePreview({
             <path d="M22 14c0 4-4 4-4 8M30 12c0 4-4 4-4 8M38 14c0 4-4 4-4 8" strokeDasharray="2 2" />
           </svg>
         );
-      case "02": // RapidFlow Plumbing
+      case "03": // RapidFlow Plumbing
         return (
           <svg className="w-16 h-16 opacity-85 text-[#0284C7]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="32" cy="32" r="20" />
@@ -55,7 +64,7 @@ export function ProjectWebsitePreview({
             <path d="M32 44v8M28 52h8" />
           </svg>
         );
-      case "03": // ORA Fine Jewelry
+      case "04": // ORA Fine Jewelry
         return (
           <svg className="w-16 h-16 opacity-85 text-[#D4AF37]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.8">
             <polygon points="32,8 54,24 44,54 20,54 10,24" />
@@ -63,13 +72,13 @@ export function ProjectWebsitePreview({
             <line x1="10" y1="24" x2="54" y2="24" />
           </svg>
         );
-      case "04": // Sunflower Dental
+      case "05": // Sunflower Dental
         return (
           <svg className="w-16 h-16 opacity-85 text-[#EAB308]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20 16c6-4 18-4 24 0 6 5 8 16 6 24-2 9-8 16-10 20-3-5-6-14-8-14s-5 9-8 14c-2-4-8-11-10-20-2-8 0-19 6-24z" />
           </svg>
         );
-      case "05": // Hans & Smith Architecture
+      case "06": // Hans & Smith Architecture
         return (
           <svg className="w-16 h-16 opacity-85 text-[#A1A1AA]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
             <rect x="14" y="20" width="36" height="34" />
@@ -78,27 +87,27 @@ export function ProjectWebsitePreview({
             <path d="M10 20l22-12 22 12" />
           </svg>
         );
-      case "06": // Apoplabs Energy
+      case "07": // Apoplabs Energy
         return (
           <svg className="w-16 h-16 opacity-85 text-[#22C55E]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <polygon points="36,8 18,34 32,34 28,56 46,30 32,30" />
           </svg>
         );
-      case "07": // Cardinal Electric
+      case "08": // Cardinal Electric
         return (
           <svg className="w-16 h-16 opacity-85 text-[#EF4444]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <polygon points="38,6 16,34 30,34 24,58 48,26 34,26" />
             <circle cx="32" cy="32" r="28" strokeDasharray="4 4" />
           </svg>
         );
-      case "08": // Petal & Lime Bakehouse
+      case "09": // Petal & Lime Bakehouse
         return (
           <svg className="w-16 h-16 opacity-85 text-[#EC4899]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 40h40v12H12zM16 28h32v12H16zM22 18h20v10H22z" />
             <circle cx="32" cy="12" r="3" fill="currentColor" />
           </svg>
         );
-      case "09": // Bluegrass Roofing
+      case "10": // Bluegrass Roofing
         return (
           <svg className="w-16 h-16 opacity-85 text-[#3B82F6]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M8 38L32 16l24 22" />
@@ -106,7 +115,7 @@ export function ProjectWebsitePreview({
             <path d="M42 22v-6h6v12" />
           </svg>
         );
-      case "10": // WILDSTEM Candles
+      case "11": // WILDSTEM Candles
         return (
           <svg className="w-16 h-16 opacity-85 text-[#A855F7]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="22" y="26" width="20" height="28" rx="3" />
@@ -114,21 +123,21 @@ export function ProjectWebsitePreview({
             <path d="M32 10c-3 4-3 7 0 10 3-3 3-6 0-10z" fill="currentColor" />
           </svg>
         );
-      case "11": // Whitfield Dermatology
+      case "12": // Whitfield Dermatology
         return (
           <svg className="w-16 h-16 opacity-85 text-[#14B8A6]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M32 12v40M12 32h40" />
             <circle cx="32" cy="32" r="24" strokeDasharray="3 3" />
           </svg>
         );
-      case "12": // Aurelia Interiors
+      case "13": // Aurelia Interiors
         return (
           <svg className="w-16 h-16 opacity-85 text-[#D97706]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.8">
             <rect x="12" y="16" width="40" height="36" rx="2" />
             <path d="M12 28h40M26 28v24" />
           </svg>
         );
-      case "13": // Steth Medical NYC
+      case "14": // Steth Medical NYC
         return (
           <svg className="w-16 h-16 opacity-85 text-[#6366F1]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="32" cy="32" r="14" />
@@ -136,13 +145,13 @@ export function ProjectWebsitePreview({
             <path d="M32 18v28M18 32h28" />
           </svg>
         );
-      case "14": // Lumina Skin Clinic
+      case "15": // Lumina Skin Clinic
         return (
           <svg className="w-16 h-16 opacity-85 text-[#F43F5E]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <polygon points="32,10 38,26 54,32 38,38 32,54 26,38 10,32 26,26" />
           </svg>
         );
-      case "15": // Cherry Works Agency
+      case "16": // Cherry Works Agency
         return (
           <svg className="w-16 h-16 opacity-85 text-[#FDA4AF]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="32" cy="32" r="20" />
@@ -150,7 +159,7 @@ export function ProjectWebsitePreview({
             <circle cx="32" cy="32" r="6" fill="currentColor" />
           </svg>
         );
-      case "16": // Moggerisland Streetwear
+      case "17": // Moggerisland Streetwear
         return (
           <svg className="w-16 h-16 opacity-90 text-[#D4AF37]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M16 46c4-12 10-18 16-18s12 6 16 18" />
