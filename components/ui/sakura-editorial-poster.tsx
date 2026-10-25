@@ -112,9 +112,9 @@ function splitTitleChars(title: string): TitleChar[] {
 }
 
 function charReveal(progress: number, fromCenter: number, lineIndex = 0): number {
-  const lineDelay = lineIndex * 0.05;
-  const start = lineDelay + fromCenter * 0.14;
-  const end = Math.min(1, start + 0.24);
+  const lineDelay = lineIndex * 0.12;
+  const start = lineDelay + fromCenter * 0.22;
+  const end = Math.min(1, start + 0.35);
   return clamp01((progress - start) / Math.max(0.001, end - start));
 }
 
@@ -133,9 +133,11 @@ function useSakuraEditorialFonts() {
 function SakuraFitTitle({
   title,
   revealProgress,
+  introProgress = 1,
 }: {
   title: string;
   revealProgress: number;
+  introProgress?: number;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const probeRef = useRef<HTMLSpanElement>(null);
@@ -143,7 +145,9 @@ function SakuraFitTitle({
 
   const lines = title.includes("\n") ? title.split("\n") : [title];
   const probeLine = lines.reduce((a, b) => (a.length > b.length ? a : b), lines[0] || "");
-  const titleProgress = clamp01(revealProgress / 0.45);
+  const scrollTitleProgress = clamp01(revealProgress / 0.45);
+  // Title reveals smoothly from initial load animation without requiring scroll
+  const effectiveProgress = Math.max(introProgress, scrollTitleProgress);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -154,11 +158,11 @@ function SakuraFitTitle({
     let cancelled = false;
     const fit = () => {
       if (cancelled) return;
-      // Allow the longest line to scale comfortably on PC up to 140px
-      const availableWidth = wrap.clientWidth * 0.94;
+      // Allow the longest line to scale comfortably on PC with generous margins
+      const availableWidth = wrap.clientWidth * 0.88;
       const next = (availableWidth / Math.max(1, probe.scrollWidth)) * PROBE;
       if (!Number.isFinite(next) || next <= 0) return;
-      setFontPx(Math.min(140, Math.max(38, Math.round(next))));
+      setFontPx(Math.min(130, Math.max(36, Math.round(next))));
     };
 
     const ro = new ResizeObserver(fit);
@@ -229,8 +233,7 @@ function SakuraFitTitle({
               )}
             >
               {chars.map((item) => {
-                const revealVal = charReveal(titleProgress, item.fromCenter, lineIndex);
-                // Invisible on initial load (revealVal = 0), then blooms smoothly into view on scroll
+                const revealVal = charReveal(effectiveProgress, item.fromCenter, lineIndex);
                 const t = revealVal;
                 const y = (1 - revealVal) * (18 + item.fromCenter * 20);
                 const side = item.index < chars.length / 2 ? 1 : -1;
@@ -277,6 +280,81 @@ function SakuraHeroVisual({
   revealProgress: number;
 }) {
   const [imgSrc, setImgSrc] = useState(sceneSrc);
+  const [introProgress, setIntroProgress] = useState(0);
+  const [showScrollPrompt, setShowScrollPrompt] = useState(false);
+
+  useEffect(() => {
+    // If reduced motion is preferred, reveal immediately
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIntroProgress(1);
+      setShowScrollPrompt(true);
+      return;
+    }
+
+    let start: number | null = null;
+    let rafId: number;
+    const duration = 1250; // smooth 1.25s entrance for the title
+    const startDelay = 180; // slight initial breath before bloom
+
+    const step = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+
+      if (elapsed < startDelay) {
+        rafId = requestAnimationFrame(step);
+        return;
+      }
+
+      const progress = Math.min(1, (elapsed - startDelay) / duration);
+      // Smooth cubic ease-out
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setIntroProgress(eased);
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
+      } else {
+        // Once title animation completes, reveal the scroll cue
+        setShowScrollPrompt(true);
+      }
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  // Automatically scroll to the project showcase 3 seconds after the title finishes loading
+  useEffect(() => {
+    if (!showScrollPrompt) return;
+
+    let cancelled = false;
+    const cancel = () => {
+      cancelled = true;
+    };
+
+    const autoScrollTimer = setTimeout(() => {
+      if (cancelled) return;
+      if (typeof window !== "undefined" && window.scrollY < 80) {
+        document.getElementById("selector")?.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 3000);
+
+    // If user starts scrolling or interacting, cancel auto-scroll to respect manual interaction
+    const onUserInteract = () => {
+      cancel();
+      clearTimeout(autoScrollTimer);
+    };
+
+    window.addEventListener("wheel", onUserInteract, { passive: true, once: true });
+    window.addEventListener("touchmove", onUserInteract, { passive: true, once: true });
+    window.addEventListener("keydown", onUserInteract, { passive: true, once: true });
+
+    return () => {
+      clearTimeout(autoScrollTimer);
+      window.removeEventListener("wheel", onUserInteract);
+      window.removeEventListener("touchmove", onUserInteract);
+      window.removeEventListener("keydown", onUserInteract);
+    };
+  }, [showScrollPrompt]);
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-black">
@@ -295,29 +373,49 @@ function SakuraHeroVisual({
       </div>
 
       {/* Layer 2 (z-20): Editorial title typography behind the flower branch */}
-      <SakuraFitTitle title={title} revealProgress={revealProgress} />
+      <SakuraFitTitle title={title} revealProgress={revealProgress} introProgress={introProgress} />
 
-      {/* Layer 3 (z-30): Foreground floral branch cutting in front of typography with realistic drop shadow */}
+      {/* Layer 3 (z-30): Foreground floral branch moved to the very right side of the screen */}
       {foregroundSrc ? (
         <img
           src={foregroundSrc}
           alt={foregroundAlt}
-          className="pointer-events-none absolute bottom-0 left-1/2 z-30 h-auto w-[min(82%,65cqh)] -translate-x-[38%] translate-y-[20%] object-contain object-bottom drop-shadow-[0_12px_28px_rgba(0,0,0,0.55)] drop-shadow-[0_3px_8px_rgba(0,0,0,0.35)]"
+          className="pointer-events-none absolute bottom-0 right-0 z-30 h-auto w-[min(50%,68cqh)] max-w-[680px] translate-x-[20%] translate-y-[3%] object-contain object-right-bottom drop-shadow-[0_16px_36px_rgba(0,0,0,0.7)] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] select-none"
           draggable={false}
         />
       ) : null}
 
-      {/* Floating subtle scroll indicator on initial view, gently fading as user scrolls */}
+      {/* Animated scroll cue that appears after the title animation finishes */}
       <div
-        className="absolute bottom-8 inset-x-0 z-45 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none"
+        className={cn(
+          "absolute bottom-8 sm:bottom-10 inset-x-0 z-40 flex flex-col items-center justify-center transition-all duration-700 ease-out",
+          showScrollPrompt ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-3 pointer-events-none"
+        )}
         style={{
-          opacity: Math.max(0, 1 - revealProgress * 4.5),
-          transform: `translate3d(0, ${revealProgress * 30}px, 0)`,
+          opacity: showScrollPrompt ? Math.max(0, 1 - revealProgress * 4.5) : 0,
+          transform: `translate3d(0, ${(showScrollPrompt ? 0 : 12) + revealProgress * 25}px, 0)`,
         }}
       >
-        <div className="w-5 h-9 rounded-full border border-white/25 flex items-start justify-center p-1 bg-black/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
-          <div className="w-1 h-2 rounded-full bg-[#FDA4AF] animate-bounce" />
-        </div>
+        <button
+          type="button"
+          onClick={() => {
+            document.getElementById("selector")?.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="group flex flex-col items-center gap-2 px-5 py-2.5 rounded-full bg-black/40 hover:bg-black/60 border border-white/10 hover:border-[#FDA4AF]/40 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.7)] cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95"
+          aria-label="Scroll to explore projects"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] sm:text-xs font-mono-tech tracking-[0.3em] font-semibold uppercase text-[#FDA4AF] group-hover:text-white transition-colors drop-shadow-[0_0_12px_rgba(253,164,175,0.6)]">
+              SCROLL
+            </span>
+            <span className="text-sm font-bold text-[#FDA4AF] group-hover:text-white transition-transform duration-300 group-hover:translate-y-0.5">
+              ↓
+            </span>
+          </div>
+          <div className="w-5 h-8 rounded-full border border-white/25 flex items-start justify-center p-1 bg-black/50 backdrop-blur-sm group-hover:border-[#FDA4AF]/60 transition-colors">
+            <div className="w-1.5 h-2 rounded-full bg-[#FDA4AF] animate-bounce shadow-[0_0_10px_rgba(253,164,175,0.9)]" />
+          </div>
+        </button>
       </div>
 
       <div

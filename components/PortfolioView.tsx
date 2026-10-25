@@ -31,7 +31,7 @@ export default function PortfolioView() {
         <SakuraEditorialPoster
           title={"CHERRY WORKS\n×\nWEBVANTAGE"}
           sceneSrc="https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=2000&q=85"
-          height="180vh"
+          height="130vh"
           className="w-full"
         />
       </section>
